@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Search and Open</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #searchResults {
+            margin-top: 20px;
+        }
+        .pdf-link {
+            display: block;
+            margin: 5px 0;
+            color: blue;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Search and Open PDFs</h1>
+    <input type="text" id="searchInput" placeholder="Search for a PDF..." onkeyup="searchPDFs()">
+    <div id="searchResults"></div>
+
+    <script>
+        const pdfs = [
+            { name: 'Document1', url: 'https://github.com/nikhil-techefficio/Pdf-collection-reader/blob/main/DSA%20Handwritten%20Notes%20Zero%20to%20Hero.pdf' },
+            { name: 'Document2', url: 'https://github.com/nikhil-techefficio/Pdf-collection-reader/blob/main/SQL.pdf' },
+            // Add more PDFs as needed
+        ];
+
+        function searchPDFs() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const results = pdfs.filter(pdf => pdf.name.toLowerCase().includes(input));
+            displayResults(results);
+        }
+
+        function displayResults(results) {
+            const searchResults = document.getElementById('searchResults');
+            searchResults.innerHTML = '';
+            results.forEach(pdf => {
+                const link = document.createElement('a');
+                link.href = pdf.url;
+                link.textContent = pdf.name;
+                link.target = '_blank';
+                link.className = 'pdf-link';
+                searchResults.appendChild(link);
+            });
+        }
+    </script>
+</body>
+</html>
