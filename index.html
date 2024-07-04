@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF Search and Open</title>
+    <title>PDF and Video Search and Open</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -12,14 +12,14 @@
         #searchResults {
             margin-top: 20px;
         }
-        .pdf-link {
+        .media-link {
             display: block;
             margin: 5px 0;
             color: blue;
             text-decoration: underline;
             cursor: pointer;
         }
-        #pdfViewer {
+        #mediaViewer {
             width: 100%;
             height: 600px;
             border: 1px solid #ccc;
@@ -28,35 +28,43 @@
     </style>
 </head>
 <body>
-    <h1>Search and Open PDFs</h1>
-    <input type="text" id="searchInput" placeholder="Search for a PDF..." onkeyup="searchPDFs()">
+    <h1>Search and Open PDFs and Videos</h1>
+    <input type="text" id="searchInput" placeholder="Search for a PDF or Video..." onkeyup="searchMedia()">
     <div id="searchResults"></div>
     <iframe id="pdfViewer" src="" style="display: none;"></iframe>
+    <video id="videoViewer" controls style="display: none;">
+        Your browser does not support the video tag.
+    </video>
 
     <script>
-        const pdfs = [
-            { name: 'DSA Handwritten Notes', url: 'https://nikhil-techefficio.github.io/Pdf-collection-reader/DSA%20handwritten%20notes%20.pdf' },
-            { name: 'DSA Handwritten Notes Zero to Hero', url: 'https://nikhil-techefficio.github.io/Pdf-collection-reader/DSA%20Handwritten%20Notes%20Zero%20to%20Hero.pdf' },
-            { name: 'SQL', url: 'https://nikhil-techefficio.github.io/Pdf-collection-reader/SQL.pdf' },
-            // Add more PDFs as needed
+        const media = [
+            { name: 'DSA Handwritten Notes', url: 'https://nikhil-techefficio.github.io/Pdf-collection-reader/DSA%20handwritten%20notes%20.pdf', type: 'pdf' },
+            { name: 'DSA Handwritten Notes Zero to Hero', url: 'https://nikhil-techefficio.github.io/Pdf-collection-reader/DSA%20Handwritten%20Notes%20Zero%20to%20Hero.pdf', type: 'pdf' },
+            { name: 'SQL', url: 'https://nikhil-techefficio.github.io/Pdf-collection-reader/SQL.pdf', type: 'pdf' },
+            { name: 'Video Tutorial', url: 'https://nikhil-techefficio.github.io/Pdf-collection-reader/v5.mp4', type: 'video' },
+            // Add more media items as needed
         ];
 
-        function searchPDFs() {
+        function searchMedia() {
             const input = document.getElementById('searchInput').value.toLowerCase();
-            const results = pdfs.filter(pdf => pdf.name.toLowerCase().includes(input));
+            const results = media.filter(item => item.name.toLowerCase().includes(input));
             displayResults(results);
         }
 
         function displayResults(results) {
             const searchResults = document.getElementById('searchResults');
             searchResults.innerHTML = '';
-            results.forEach(pdf => {
+            results.forEach(item => {
                 const link = document.createElement('a');
                 link.href = "#";
-                link.textContent = pdf.name;
-                link.className = 'pdf-link';
+                link.textContent = item.name;
+                link.className = 'media-link';
                 link.onclick = () => {
-                    openPDF(pdf.url);
+                    if (item.type === 'pdf') {
+                        openPDF(item.url);
+                    } else if (item.type === 'video') {
+                        openVideo(item.url);
+                    }
                     return false;
                 };
                 searchResults.appendChild(link);
@@ -65,13 +73,23 @@
 
         function openPDF(url) {
             const pdfViewer = document.getElementById('pdfViewer');
+            const videoViewer = document.getElementById('videoViewer');
             pdfViewer.style.display = 'block';
+            videoViewer.style.display = 'none';
             pdfViewer.src = url;
         }
 
-        // Display all PDFs by default when the page loads
+        function openVideo(url) {
+            const pdfViewer = document.getElementById('pdfViewer');
+            const videoViewer = document.getElementById('videoViewer');
+            pdfViewer.style.display = 'none';
+            videoViewer.style.display = 'block';
+            videoViewer.src = url;
+        }
+
+        // Display all media items by default when the page loads
         document.addEventListener('DOMContentLoaded', () => {
-            displayResults(pdfs);
+            displayResults(media);
         });
     </script>
 </body>
