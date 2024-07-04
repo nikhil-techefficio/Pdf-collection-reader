@@ -20,10 +20,19 @@
             cursor: pointer;
         }
         #mediaViewer {
+            display: flex;
+            flex-direction: column;
+            margin-top: 20px;
+        }
+        #pdfViewer, #videoViewer {
             width: 100%;
-            height: 600px;
+            height: 0;
             border: 1px solid #ccc;
             margin-top: 20px;
+            flex-grow: 1;
+        }
+        #videoViewer {
+            display: none;
         }
     </style>
 </head>
@@ -31,10 +40,12 @@
     <h1>Search and Open PDFs and Videos</h1>
     <input type="text" id="searchInput" placeholder="Search for a PDF or Video..." onkeyup="searchMedia()">
     <div id="searchResults"></div>
-    <iframe id="pdfViewer" src="" style="display: none;"></iframe>
-    <video id="videoViewer" controls style="display: none;">
-        Your browser does not support the video tag.
-    </video>
+    <div id="mediaViewer">
+        <iframe id="pdfViewer" src=""></iframe>
+        <video id="videoViewer" controls>
+            Your browser does not support the video tag.
+        </video>
+    </div>
 
     <script>
         const media = [
@@ -76,6 +87,7 @@
             const videoViewer = document.getElementById('videoViewer');
             pdfViewer.style.display = 'block';
             videoViewer.style.display = 'none';
+            pdfViewer.style.height = '600px'; // Reset height for PDF
             pdfViewer.src = url;
         }
 
@@ -84,6 +96,7 @@
             const videoViewer = document.getElementById('videoViewer');
             pdfViewer.style.display = 'none';
             videoViewer.style.display = 'block';
+            videoViewer.style.height = '600px'; // Reset height for video
             videoViewer.src = url;
         }
 
