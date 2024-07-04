@@ -68,6 +68,11 @@
             pdfViewer.style.display = 'block';
             pdfViewer.src = url;
         }
+
+        // Display all PDFs by default when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            displayResults(pdfs);
+        });
     </script>
 </body>
 </html>
