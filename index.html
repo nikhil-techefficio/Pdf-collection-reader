@@ -19,12 +19,19 @@
             text-decoration: underline;
             cursor: pointer;
         }
+        #pdfViewer {
+            width: 100%;
+            height: 600px;
+            border: 1px solid #ccc;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
     <h1>Search and Open PDFs</h1>
     <input type="text" id="searchInput" placeholder="Search for a PDF..." onkeyup="searchPDFs()">
     <div id="searchResults"></div>
+    <iframe id="pdfViewer" src="" style="display: none;"></iframe>
 
     <script>
         const pdfs = [
@@ -44,12 +51,21 @@
             searchResults.innerHTML = '';
             results.forEach(pdf => {
                 const link = document.createElement('a');
-                link.href = pdf.url;
+                link.href = "#";
                 link.textContent = pdf.name;
-                link.target = '_blank';
                 link.className = 'pdf-link';
+                link.onclick = () => {
+                    openPDF(pdf.url);
+                    return false;
+                };
                 searchResults.appendChild(link);
             });
+        }
+
+        function openPDF(url) {
+            const pdfViewer = document.getElementById('pdfViewer');
+            pdfViewer.style.display = 'block';
+            pdfViewer.src = url;
         }
     </script>
 </body>
