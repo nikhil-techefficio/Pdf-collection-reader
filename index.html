@@ -9,19 +9,32 @@
             font-family: Arial, sans-serif;
             margin: 20px;
         }
+        #searchBar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
         #searchResults {
             margin-top: 20px;
         }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
         .media-link {
-            display: flex;
-            align-items: center;
-            margin: 5px 0;
             color: blue;
             text-decoration: underline;
             cursor: pointer;
-        }
-        .media-icon {
-            margin-right: 10px;
         }
         #mediaViewer {
             display: flex;
@@ -38,11 +51,23 @@
         #videoViewer {
             display: none;
         }
+        #toggleButton {
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
     <h1>Search and Open PDFs and Videos</h1>
-    <input type="text" id="searchInput" placeholder="Search for a PDF or Video..." onkeyup="searchMedia()">
+    <div id="searchBar">
+        <input type="text" id="searchInput" placeholder="Search for a PDF or Video..." onkeyup="searchMedia()">
+        <select id="typeFilter" onchange="searchMedia()">
+            <option value="all">All</option>
+            <option value="pdf">PDF</option>
+            <option value="video">Video</option>
+            <option value="mp4">MP4</option>
+        </select>
+    </div>
+    <button id="toggleButton" onclick="toggleSearchResults()">Hide List</button>
     <div id="searchResults"></div>
     <div id="mediaViewer">
         <iframe id="pdfViewer" src=""></iframe>
@@ -67,43 +92,55 @@
             // Add more media items as needed
         ];
 
+        let isListVisible = true;
+
         function searchMedia() {
             const input = document.getElementById('searchInput').value.toLowerCase();
-            const results = media.filter(item => item.name.toLowerCase().includes(input));
+            const filter = document.getElementById('typeFilter').value;
+            const results = media.filter(item => {
+                const matchesSearch = item.name.toLowerCase().includes(input);
+                const matchesFilter = filter === 'all' || item.type === filter;
+                return matchesSearch && matchesFilter;
+            });
             displayResults(results);
         }
 
         function displayResults(results) {
             const searchResults = document.getElementById('searchResults');
             searchResults.innerHTML = '';
-            results.forEach(item => {
-                const link = document.createElement('a');
-                link.href = "#";
-                link.className = 'media-link';
-                link.onclick = () => {
-                    if (item.type === 'pdf') {
-                        openPDF(item.url);
-                    } else if (item.type === 'video' || item.type === 'mp4') {
-                        openVideo(item.url);
-                    }
-                    return false;
-                };
+            
+            if (results.length > 0) {
+                const table = document.createElement('table');
+                const header = table.createTHead();
+                const headerRow = header.insertRow(0);
+                const nameHeader = document.createElement('th');
+                nameHeader.innerHTML = 'Name';
+                const typeHeader = document.createElement('th');
+                typeHeader.innerHTML = 'Type';
+                headerRow.appendChild(nameHeader);
+                headerRow.appendChild(typeHeader);
 
-                const icon = document.createElement('span');
-                icon.className = 'media-icon';
+                const body = table.createTBody();
+                results.forEach(item => {
+                    const row = body.insertRow();
+                    const nameCell = row.insertCell(0);
+                    const typeCell = row.insertCell(1);
+                    nameCell.innerHTML = `<a href="#" class="media-link" onclick="handleClick('${item.url}', '${item.type}')">${item.name}</a>`;
+                    typeCell.innerHTML = item.type;
+                });
+                searchResults.appendChild(table);
+            } else {
+                searchResults.innerHTML = '<p>No results found.</p>';
+            }
+        }
 
-                if (item.type === 'pdf') {
-                    icon.textContent = '📄'; // PDF icon
-                } else if (item.type === 'video') {
-                    icon.textContent = '🎥'; // Video icon
-                } else if (item.type === 'mp4') {
-                    icon.textContent = '📹'; // MP4 icon
-                }
-
-                link.appendChild(icon);
-                link.appendChild(document.createTextNode(item.name));
-                searchResults.appendChild(link);
-            });
+        function handleClick(url, type) {
+            if (type === 'pdf') {
+                openPDF(url);
+            } else {
+                openVideo(url);
+            }
+            return false;
         }
 
         function openPDF(url) {
@@ -111,8 +148,9 @@
             const videoViewer = document.getElementById('videoViewer');
             pdfViewer.style.display = 'block';
             videoViewer.style.display = 'none';
-            pdfViewer.style.height = '600px'; // Reset height for PDF
+            pdfViewer.style.height = '600px';
             pdfViewer.src = url;
+            toggleSearchResults(true);
         }
 
         function openVideo(url) {
@@ -120,8 +158,23 @@
             const videoViewer = document.getElementById('videoViewer');
             pdfViewer.style.display = 'none';
             videoViewer.style.display = 'block';
-            videoViewer.style.height = '600px'; // Reset height for video
+            videoViewer.style.height = '600px';
             videoViewer.src = url;
+            toggleSearchResults(true);
+        }
+
+        function toggleSearchResults(forceHide = false) {
+            const searchResults = document.getElementById('searchResults');
+            const toggleButton = document.getElementById('toggleButton');
+            if (isListVisible || forceHide) {
+                searchResults.style.display = 'none';
+                toggleButton.textContent = 'Show List';
+                isListVisible = false;
+            } else {
+                searchResults.style.display = 'block';
+                toggleButton.textContent = 'Hide List';
+                isListVisible = true;
+            }
         }
 
         // Display all media items by default when the page loads
