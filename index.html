@@ -8,12 +8,32 @@
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        h1 {
+            color: #4CAF50;
+            text-align: center;
         }
         #searchBar {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+        }
+        #searchInput {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        #typeFilter {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
         }
         #searchResults {
             margin-top: 20px;
@@ -29,12 +49,19 @@
             text-align: left;
         }
         th {
-            background-color: #f4f4f4;
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
         }
         .media-link {
-            color: blue;
-            text-decoration: underline;
+            color: #4CAF50;
+            text-decoration: none;
             cursor: pointer;
+        }
+        .media-link:hover {
+            text-decoration: underline;
         }
         #mediaViewer {
             display: flex;
@@ -53,6 +80,28 @@
         }
         #toggleButton {
             margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #toggleButton:hover {
+            background-color: #45a049;
+        }
+        #searchResults p {
+            text-align: center;
+            color: #999;
+        }
+        .fade {
+            animation: fadeIn 0.5s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
     </style>
 </head>
@@ -68,7 +117,7 @@
         </select>
     </div>
     <button id="toggleButton" onclick="toggleSearchResults()">Hide List</button>
-    <div id="searchResults"></div>
+    <div id="searchResults" class="fade"></div>
     <div id="mediaViewer">
         <iframe id="pdfViewer" src=""></iframe>
         <video id="videoViewer" controls>
@@ -89,7 +138,6 @@
             { name: 'Leetcode', url: 'https://nikhil-techefficio.github.io/Pdf-collection-reader/Leetcode%20SQL%20Solutions.pdf', type: 'pdf' },
             { name: 'Video Tutorial', url: 'https://nikhil-techefficio.github.io/Pdf-collection-reader/v5.mp4', type: 'video' },
             { name: 'Mantralayam', url: 'https://nikhil-techefficio.github.io/Pdf-collection-reader/videoplayback.m4a', type: 'mp4' },
-            // Add more media items as needed
         ];
 
         let isListVisible = true;
