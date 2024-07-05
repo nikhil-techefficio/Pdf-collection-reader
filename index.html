@@ -59,9 +59,12 @@
             color: #4CAF50;
             text-decoration: none;
             cursor: pointer;
+            display: block;
+            padding: 5px;
+            transition: background-color 0.3s;
         }
         .media-link:hover {
-            text-decoration: underline;
+            background-color: #e0f2f1;
         }
         #mediaViewer {
             display: flex;
@@ -96,9 +99,6 @@
             text-align: center;
             color: #999;
         }
-        .fade {
-            animation: fadeIn 0.5s;
-        }
         .previewLayer {
             position: fixed;
             top: 0;
@@ -110,6 +110,7 @@
             align-items: center;
             justify-content: center;
             z-index: 1000;
+            transition: opacity 0.3s;
         }
         .previewContent {
             background: white;
@@ -160,7 +161,7 @@
             Your browser does not support the video tag.
         </video>
     </div>
-    <div id="previewLayer" class="previewLayer">
+    <div id="previewLayer" class="previewLayer" onmouseleave="closePreview()">
         <div class="previewContent" id="previewContent"></div>
         <button class="previewClose" onclick="closePreview()">&times;</button>
     </div>
@@ -213,10 +214,14 @@
                     const row = body.insertRow();
                     const nameCell = row.insertCell(0);
                     const typeCell = row.insertCell(1);
-                    nameCell.innerHTML = `<a href="#" class="media-link" onclick="handleClick('${item.url}', '${item.type}')">${item.name}</a>`;
-                    typeCell.innerHTML = item.type;
+                    const link = document.createElement('a');
+                    link.href = '#';
+                    link.textContent = item.name;
+                    link.className = 'media-link';
+                    link.onclick = () => handleClick(item.url, item.type);
+                    nameCell.appendChild(link);
+                    typeCell.textContent = item.type.toUpperCase();
                     nameCell.onmouseover = () => previewMedia(item.url, item.type);
-                    nameCell.onmouseout = closePreview;
                 });
                 searchResults.appendChild(table);
             } else {
@@ -230,7 +235,7 @@
             } else {
                 openVideo(url);
             }
-            return false;
+            hideSearchResults();
         }
 
         function openPDF(url) {
@@ -238,7 +243,7 @@
             const videoViewer = document.getElementById('videoViewer');
             pdfViewer.style.display = 'block';
             videoViewer.style.display = 'none';
-            pdfViewer.style.height = '600px';
+            pdfViewer.style.height = '600px'; // Reset height for PDF
             pdfViewer.src = url;
             hideSearchResults();
         }
@@ -248,7 +253,7 @@
             const videoViewer = document.getElementById('videoViewer');
             pdfViewer.style.display = 'none';
             videoViewer.style.display = 'block';
-            videoViewer.style.height = '600px';
+            videoViewer.style.height = '600px'; // Reset height for video
             videoViewer.src = url;
             hideSearchResults();
         }
@@ -292,11 +297,15 @@
                 previewContent.appendChild(video);
             }
             previewLayer.style.display = 'flex';
+            previewLayer.classList.add('fade');
         }
 
         function closePreview() {
             const previewLayer = document.getElementById('previewLayer');
-            previewLayer.style.display = 'none';
+            previewLayer.classList.remove('fade');
+            setTimeout(() => {
+                previewLayer.style.display = 'none';
+            }, 300); // Delay closing to allow fade-out animation
         }
 
         document.addEventListener('DOMContentLoaded', () => {
