@@ -13,11 +13,15 @@
             margin-top: 20px;
         }
         .media-link {
-            display: block;
+            display: flex;
+            align-items: center;
             margin: 5px 0;
             color: blue;
             text-decoration: underline;
             cursor: pointer;
+        }
+        .media-icon {
+            margin-right: 10px;
         }
         #mediaViewer {
             display: flex;
@@ -52,17 +56,14 @@
             { name: 'DSA Handwritten Notes', url: 'https://nikhil-techefficio.github.io/Pdf-collection-reader/DSA%20handwritten%20notes%20.pdf', type: 'pdf' },
             { name: 'DSA Handwritten Notes Zero to Hero', url: 'https://nikhil-techefficio.github.io/Pdf-collection-reader/DSA%20Handwritten%20Notes%20Zero%20to%20Hero.pdf', type: 'pdf' },
             { name: 'SQL', url: 'https://nikhil-techefficio.github.io/Pdf-collection-reader/SQL.pdf', type: 'pdf' },
-             { name: 'CSS', url: 'https://nikhil-techefficio.github.io/Pdf-collection-reader/CSSNotes.pdf', type: 'pdf' },
+            { name: 'CSS', url: 'https://nikhil-techefficio.github.io/Pdf-collection-reader/CSSNotes.pdf', type: 'pdf' },
             { name: 'HTML', url: 'https://nikhil-techefficio.github.io/Pdf-collection-reader/HTML5.pdf', type: 'pdf' },
             { name: 'DSA Handbook', url: 'https://nikhil-techefficio.github.io/Pdf-collection-reader/DSA1.pdf', type: 'pdf' },
-
             { name: 'Dse Handbook', url: 'https://nikhil-techefficio.github.io/Pdf-collection-reader/DBMS%20EXCLUSIVE%20NOTES%20.pdf', type: 'pdf' },
             { name: 'JS Handbook', url: 'https://nikhil-techefficio.github.io/Pdf-collection-reader/JS_Chapterwise_Notes.pdf', type: 'pdf' },
-             { name: 'Leetcode ', url: 'https://nikhil-techefficio.github.io/Pdf-collection-reader/Leetcode%20SQL%20Solutions.pdf', type: 'pdf' },
-          
-            
+            { name: 'Leetcode', url: 'https://nikhil-techefficio.github.io/Pdf-collection-reader/Leetcode%20SQL%20Solutions.pdf', type: 'pdf' },
             { name: 'Video Tutorial', url: 'https://nikhil-techefficio.github.io/Pdf-collection-reader/v5.mp4', type: 'video' },
-             //{ name: 'Mantralayam', url: 'https://nikhil-techefficio.github.io/Pdf-collection-reader/videoplayback.weba', type='video/webm' },
+            { name: 'Mantralayam', url: 'https://nikhil-techefficio.github.io/Pdf-collection-reader/videoplayback.m4a', type: 'mp4' },
             // Add more media items as needed
         ];
 
@@ -78,16 +79,29 @@
             results.forEach(item => {
                 const link = document.createElement('a');
                 link.href = "#";
-                link.textContent = item.name;
                 link.className = 'media-link';
                 link.onclick = () => {
                     if (item.type === 'pdf') {
                         openPDF(item.url);
-                    } else if (item.type === 'video') {
+                    } else if (item.type === 'video' || item.type === 'mp4') {
                         openVideo(item.url);
                     }
                     return false;
                 };
+
+                const icon = document.createElement('span');
+                icon.className = 'media-icon';
+
+                if (item.type === 'pdf') {
+                    icon.textContent = '📄'; // PDF icon
+                } else if (item.type === 'video') {
+                    icon.textContent = '🎥'; // Video icon
+                } else if (item.type === 'mp4') {
+                    icon.textContent = '📹'; // MP4 icon
+                }
+
+                link.appendChild(icon);
+                link.appendChild(document.createTextNode(item.name));
                 searchResults.appendChild(link);
             });
         }
