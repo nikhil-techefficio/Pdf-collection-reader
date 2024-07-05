@@ -59,12 +59,15 @@
             color: #4CAF50;
             text-decoration: none;
             cursor: pointer;
-            display: block;
-            padding: 5px;
-            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
         }
         .media-link:hover {
-            background-color: #e0f2f1;
+            text-decoration: underline;
+        }
+        .previewIcon {
+            margin-left: 10px;
+            cursor: pointer;
         }
         #mediaViewer {
             display: flex;
@@ -218,11 +221,25 @@
                     link.href = '#';
                     link.textContent = item.name;
                     link.className = 'media-link';
-                    link.onclick = () => handleClick(item.url, item.type);
+                    link.onclick = (event) => {
+                        event.preventDefault(); // Prevents following the link
+                        handleClick(item.url, item.type);
+                    };
                     nameCell.appendChild(link);
                     typeCell.textContent = item.type.toUpperCase();
-                    nameCell.onmouseover = () => previewMedia(item.url, item.type);
+
+                    const previewIcon = document.createElement('span');
+                    previewIcon.className = 'previewIcon';
+                    previewIcon.innerHTML = '&#128065;'; // Eye icon
+                    previewIcon.onclick = (event) => {
+                        event.stopPropagation(); // Prevents bubbling to the link
+                        previewMedia(item.url, item.type);
+                    };
+                    link.appendChild(previewIcon);
+
+                    row.classList.add('media-item');
                 });
+
                 searchResults.appendChild(table);
             } else {
                 searchResults.innerHTML = '<p>No results found.</p>';
@@ -232,10 +249,9 @@
         function handleClick(url, type) {
             if (type === 'pdf') {
                 openPDF(url);
-            } else {
+            } else if (type === 'video' || type === 'mp4') {
                 openVideo(url);
             }
-            hideSearchResults();
         }
 
         function openPDF(url) {
